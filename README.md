@@ -4,8 +4,10 @@
 
 注册界面：
 <img width="1530" height="1015" alt="image" src="https://github.com/user-attachments/assets/1702ad06-fe55-4b85-8fd1-8ea08d5f918f" />
+
 聊天界面：
 <img width="1530" height="1015" alt="image" src="https://github.com/user-attachments/assets/6f2428ac-cf16-4a73-86dd-e0c722528020" />
+
 后台管理：
 <img width="1530" height="1015" alt="image" src="https://github.com/user-attachments/assets/b4abf1d2-076c-4044-a92e-6f0e8711ec15" />
 
