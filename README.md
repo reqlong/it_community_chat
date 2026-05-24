@@ -1,6 +1,7 @@
 # IT技术社区聊天室
 
 一个基于 Node.js + Express + Socket.IO 的实时技术交流社区，支持多人在线聊天、文件共享、文件夹管理以及后台管理功能。
+<img width="1530" height="1015" alt="image" src="https://github.com/user-attachments/assets/1702ad06-fe55-4b85-8fd1-8ea08d5f918f" />
 
 ## 功能特性
 
