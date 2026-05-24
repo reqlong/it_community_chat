@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT技术社区 - 后台管理</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <h2>IT技术社区</h2>
+                <span class="badge">后台管理</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">&#128202;</span>
+                    <span>数据概览</span>
+                </a>
+                <a href="#" class="nav-item" data-page="users">
+                    <span class="nav-icon">&#128101;</span>
+                    <span>用户管理</span>
+                </a>
+                <a href="#" class="nav-item" data-page="documents">
+                    <span class="nav-icon">&#128193;</span>
+                    <span>文件管理</span>
+                </a>
+                <a href="#" class="nav-item" data-page="messages">
+                    <span class="nav-icon">&#128172;</span>
+                    <span>消息管理</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容 -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1 id="pageTitle">数据概览</h1>
+                <div class="header-actions">
+                    <a href="/chat.html" class="btn btn-secondary">返回前台</a>
+                    <button id="logoutBtn" class="btn btn-danger">退出登录</button>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <!-- Dashboard -->
+                <div id="dashboardPage" class="page active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-users">&#128101;</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statUsers">0</div>
+                                <div class="stat-label">总用户数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-online">&#128994;</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statOnline">0</div>
+                                <div class="stat-label">在线用户</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-messages">&#128172;</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statMessages">0</div>
+                                <div class="stat-label">总消息数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-documents">&#128196;</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statDocuments">0</div>
+                                <div class="stat-label">文档数量</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-folders">&#128194;</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statFolders">0</div>
+                                <div class="stat-label">文件夹数</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户管理 -->
+                <div id="usersPage" class="page">
+                    <div class="table-toolbar">
+                        <input type="text" id="userSearch" placeholder="搜索用户名或昵称..." class="search-input">
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>头像</th>
+                                    <th>账号</th>
+                                    <th>昵称</th>
+                                    <th>性别</th>
+                                    <th>角色</th>
+                                    <th>状态</th>
+                                    <th>注册时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 文件管理 -->
+                <div id="documentsPage" class="page">
+                    <div class="table-toolbar">
+                        <button id="createFolderBtn" class="btn btn-primary">+ 新建文件夹</button>
+                        <input type="text" id="docSearch" placeholder="搜索文件名..." class="search-input">
+                    </div>
+                    <div class="folders-section">
+                        <h4>文件夹列表</h4>
+                        <div id="foldersList" class="folders-list"></div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>文件名</th>
+                                    <th>大小</th>
+                                    <th>上传者</th>
+                                    <th>文件夹</th>
+                                    <th>下载次数</th>
+                                    <th>上传时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="docsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 消息管理 -->
+                <div id="messagesPage" class="page">
+                    <div class="table-toolbar">
+                        <input type="text" id="msgSearch" placeholder="搜索消息内容..." class="search-input">
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>发送者</th>
+                                    <th>内容</th>
+                                    <th>时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messagesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 编辑用户弹窗 -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑用户</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editUserUsername">账号</label>
+                    <input type="text" id="editUserUsername" class="readonly-field" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="editUserNickname">昵称</label>
+                    <input type="text" id="editUserNickname" maxlength="30">
+                </div>
+                <div class="form-group">
+                    <label for="editUserGender">性别</label>
+                    <div class="gender-select">
+                        <label class="gender-option">
+                            <input type="radio" id="editUserGender" name="editUserGender" value="male">
+                            <span class="gender-icon male">&#9794;</span>
+                            <span>男</span>
+                        </label>
+                        <label class="gender-option">
+                            <input type="radio" name="editUserGender" value="female">
+                            <span class="gender-icon female">&#9792;</span>
+                            <span>女</span>
+                        </label>
+                        <label class="gender-option">
+                            <input type="radio" name="editUserGender" value="gay">
+                            <span class="gender-icon gay">&#9893;</span>
+                            <span>Gay</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editUserRole">角色</label>
+                    <select id="editUserRole">
+                        <option value="user">普通用户</option>
+                        <option value="admin">管理员</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveUserBtn" class="btn btn-primary">保存</button>
+                <button class="btn btn-secondary modal-close">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改密码弹窗 -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>修改用户密码</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="pwdUserUsername">账号</label>
+                    <input type="text" id="pwdUserUsername" class="readonly-field" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="adminNewPassword">新密码</label>
+                    <input type="password" id="adminNewPassword" placeholder="输入新密码（至少6位）" minlength="6">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="savePasswordBtn" class="btn btn-primary">确认修改</button>
+                <button class="btn btn-secondary modal-close">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建文件夹弹窗 -->
+    <div id="createFolderModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>新建文件夹</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="folderName">文件夹名称</label>
+                    <input type="text" id="folderName" placeholder="输入文件夹名称">
+                </div>
+                <div class="form-group">
+                    <label for="folderParentSelect">父目录</label>
+                    <select id="folderParentSelect">
+                        <option value="">根目录</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmCreateFolderBtn" class="btn btn-primary">创建</button>
+                <button class="btn btn-secondary modal-close">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

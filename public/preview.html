@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            z-index: 10;
+        }
+        .preview-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-meta {
+            font-size: 13px;
+            color: #666;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+        .preview-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #4a90d9;
+            color: white;
+        }
+        .btn-primary:hover { background: #357abd; }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .preview-body {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px;
+        }
+        .preview-content {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            max-width: 900px;
+            width: 100%;
+            min-height: 400px;
+            overflow: hidden;
+        }
+        .preview-image {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+        .preview-pdf {
+            width: 100%;
+            height: calc(100vh - 80px);
+            border: none;
+        }
+        .preview-html {
+            padding: 40px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .preview-html h1, .preview-html h2, .preview-html h3 {
+            margin: 1em 0 0.5em;
+        }
+        .preview-html p { margin: 0.5em 0; }
+        .preview-html table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+        .preview-html td, .preview-html th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            color: #666;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .loading {
+            text-align: center;
+            padding: 80px;
+            color: #666;
+        }
+        @media (max-width: 640px) {
+            .preview-header {
+                padding: 10px 14px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .preview-header h2 {
+                font-size: 14px;
+                gap: 4px;
+                flex: 1;
+                min-width: 0;
+            }
+            .preview-header h2 span {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .file-meta {
+                font-size: 11px;
+                margin-left: 4px;
+            }
+            .preview-actions {
+                gap: 6px;
+            }
+            .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            .preview-body {
+                padding: 12px;
+            }
+            .preview-html {
+                padding: 20px;
+            }
+            .empty-state {
+                padding: 40px 16px;
+            }
+            .empty-state .icon {
+                font-size: 36px;
+            }
+            .empty-state h3 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-header">
+        <h2>
+            <span id="fileIcon">&#128196;</span>
+            <span id="fileName">加载中...</span>
+            <span id="fileMeta" class="file-meta"></span>
+        </h2>
+        <div class="preview-actions">
+            <a id="downloadBtn" href="#" class="btn btn-primary" download>下载</a>
+            <button class="btn btn-secondary" onclick="window.close()">关闭</button>
+        </div>
+    </div>
+    <div class="preview-body">
+        <div id="previewContainer" class="preview-content">
+            <div class="loading">正在加载文件...</div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const params = new URLSearchParams(location.search);
+        const docId = params.get('id');
+
+        if (!docId) {
+            document.getElementById('previewContainer').innerHTML = '<div class="empty-state"><div class="icon">&#9888;</div><h3>参数错误</h3><p>缺少文件 ID</p></div>';
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        async function loadPreview() {
+            try {
+                const res = await fetch(`/api/document/${docId}`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!res.ok) {
+                    throw new Error('获取文件信息失败');
+                }
+                const doc = await res.json();
+
+                document.getElementById('fileName').textContent = doc.originalName;
+                document.getElementById('fileMeta').textContent = formatSize(doc.size);
+                document.getElementById('downloadBtn').href = `/api/document/download/${docId}`;
+
+                const mimetype = doc.mimetype || '';
+                const filename = doc.filename || '';
+                const ext = filename.split('.').pop().toLowerCase();
+                const container = document.getElementById('previewContainer');
+
+                // 图片
+                if (mimetype.startsWith('image/')) {
+                    document.getElementById('fileIcon').textContent = '🖼';
+                    container.innerHTML = `<img src="/api/document/inline/${docId}?token=${token}" alt="${doc.originalName}" class="preview-image" onerror="this.parentElement.innerHTML='<div class=\\'empty-state\\'><div class=\\'icon\\'>&#9888;</div><h3>图片加载失败</h3></div>'">`;
+                    return;
+                }
+
+                // PDF
+                if (mimetype === 'application/pdf' || ext === 'pdf') {
+                    document.getElementById('fileIcon').textContent = '📄';
+                    container.innerHTML = `<embed src="/api/document/inline/${docId}?token=${token}" type="application/pdf" class="preview-pdf">`;
+                    return;
+                }
+
+                // 尝试 HTML 预览（docx、txt、代码文件等）
+                const htmlRes = await fetch(`/api/document/preview-html/${docId}`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const htmlData = await htmlRes.json();
+                if (htmlRes.ok && htmlData.type === 'html') {
+                    document.getElementById('fileIcon').textContent = '📄';
+                    container.innerHTML = `<div class="preview-html">${htmlData.content}</div>`;
+                    return;
+                }
+
+                // 不支持的格式
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">&#128196;</div>
+                        <h3>暂不支持在线预览</h3>
+                        <p>该文件格式（.${ext}）暂不支持浏览器内预览，请下载后查看。</p>
+                        <a href="/api/document/download/${docId}" class="btn btn-primary" download>下载文件</a>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById('previewContainer').innerHTML = `<div class="empty-state"><div class="icon">&#9888;</div><h3>加载失败</h3><p>${err.message}</p></div>`;
+            }
+        }
+
+        if (docId) loadPreview();
+    </script>
+</body>
+</html>

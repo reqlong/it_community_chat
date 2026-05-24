@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm start *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(cmd /c where node 2>nul; cmd /c where npm 2>nul; echo \"---\"; $env:PATH -split ';' | Where-Object { $_ -match 'node|npm|nvm' })",
+      "PowerShell(cmd /c 'where node' ; cmd /c 'where npm')",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell($env:PATH = \"C:\\\\nodejs\\\\node-v20.17.0-win-x64;$env:PATH\"; node server.js)",
+      "PowerShell($currentPath = [Environment]::GetEnvironmentVariable\\('Path', 'Machine'\\); Write-Output $currentPath)",
+      "PowerShell($nodePath = 'C:\\\\nodejs\\\\node-v20.17.0-win-x64'; $currentPath = [Environment]::GetEnvironmentVariable\\('Path', 'Machine'\\); if \\(-not $currentPath.Contains\\($nodePath\\)\\) { [Environment]::SetEnvironmentVariable\\('Path', \"$currentPath;$nodePath\", 'Machine'\\); Write-Output '已添加 Node 到系统 PATH' } else { Write-Output 'Node 路径已存在' })",
+      "WebFetch(domain:api.paugram.com)",
+      "PowerShell(Invoke-WebRequest -Uri 'https://api.paugram.com/wallpaper/' -Method HEAD -MaximumRedirection 0 -ErrorAction SilentlyContinue | Select-Object StatusCode,Headers,RawContent)",
+      "PowerShell(curl.exe -sI 'https://api.paugram.com/wallpaper/')"
+    ]
+  }
+}

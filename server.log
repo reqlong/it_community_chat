@@ -1,0 +1,10 @@
+服务器运行在端口 3001
+访问 http://localhost:3001 开始使用
+后台管理: http://localhost:3001/admin.html
+MySQL 数据库: it_community_chat
+用户连接: user1
+用户连接: admin
+用户断开: admin
+用户连接: admin
+用户断开: user1
+用户连接: user1
